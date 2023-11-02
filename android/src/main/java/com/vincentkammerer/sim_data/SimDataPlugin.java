@@ -9,6 +9,7 @@ import android.telephony.SubscriptionManager;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import android.telephony.TelephonyManager;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -90,6 +91,12 @@ public class SimDataPlugin implements FlutterPlugin, MethodCallHandler, Activity
       boolean networkRoaming = subscriptionManager.isNetworkRoaming(slotIndex);
       String phoneNumber = subscriptionInfo.getNumber();
       int subscriptionId = subscriptionInfo.getSubscriptionId();
+      
+      // Get IMEI for this slot
+      TelephonyManager telephonyManager = (TelephonyManager) this.applicationContext
+          .getSystemService(Context.TELEPHONY_SERVICE);
+      String imei = telephonyManager.getImei(slotIndex);
+
 
       JSONObject card = new JSONObject();
 
@@ -104,6 +111,7 @@ public class SimDataPlugin implements FlutterPlugin, MethodCallHandler, Activity
       card.put("serialNumber", serialNumber);
       card.put("slotIndex", slotIndex);
       card.put("subscriptionId", subscriptionId);
+      card.put("slotImei", imei);
 
       cards.put(card);
 
